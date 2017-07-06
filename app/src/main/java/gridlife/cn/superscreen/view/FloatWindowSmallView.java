@@ -84,7 +84,7 @@ public class FloatWindowSmallView extends LinearLayout {
 		viewWidth = view.getLayoutParams().width;
 		viewHeight = view.getLayoutParams().height;
 		TextView percentView = findViewById(R.id.percent);
-		percentView.setText(MyWindowManager.getUsedPercentValue(context));
+		percentView.setText("O(∩_∩)O");
 	}
 
 	@Override

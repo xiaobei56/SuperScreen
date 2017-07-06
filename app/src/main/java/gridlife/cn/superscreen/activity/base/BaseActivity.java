@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
 import gridlife.cn.superscreen.service.FloatWindowService;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -26,10 +27,12 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         requestPermission();
         setContentView(getLayout());
         initData();
         initView();
+
     }
 
     /**
@@ -88,8 +91,8 @@ public abstract class BaseActivity extends AppCompatActivity implements EasyPerm
     public void showMissingPermissionDialog() {
 
         new AlertDialog.Builder(this)
-                .setTitle("请开启悬浮窗权限")
-                .setMessage("手动开启")
+                .setTitle("请手动开启权限")
+                .setMessage("打开悬浮窗或允许在其他应用上显示的权限")
                 .setPositiveButton("GO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

@@ -11,9 +11,11 @@ import android.os.IBinder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import gridlife.cn.superscreen.bean.SmallViewParameter;
 import gridlife.cn.superscreen.manger.MyWindowManager;
 
 /**
@@ -24,6 +26,7 @@ import gridlife.cn.superscreen.manger.MyWindowManager;
 
 public class FloatWindowService extends Service {
 
+
 	/**
 	 * 用于在线程中创建或移除悬浮窗。
 	 */
@@ -33,6 +36,8 @@ public class FloatWindowService extends Service {
 	 * 定时器，定时进行检测当前应该创建还是移除悬浮窗。
 	 */
 	private Timer timer;
+	private ArrayList<SmallViewParameter> list;
+	private SmallViewParameter smallViewParameter;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -40,11 +45,17 @@ public class FloatWindowService extends Service {
 	}
 
 	@Override
+	public void onCreate() {
+		super.onCreate();
+	}
+
+	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		smallViewParameter = (SmallViewParameter)intent.getExtras().get("windowParameter");
 		// 开启定时器，每隔0.5秒刷新一次
 		if (timer == null) {
 			timer = new Timer();
-			timer.scheduleAtFixedRate(new RefreshTask(), 0, 500);
+			timer.scheduleAtFixedRate(new RefreshTask(), 0, 1200);
 		}
 		return super.onStartCommand(intent, flags, startId);
 	}
@@ -84,14 +95,14 @@ public class FloatWindowService extends Service {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
-						MyWindowManager.updateUsedPercent(getApplicationContext());
+						MyWindowManager.updateMove(getApplicationContext(),smallViewParameter);
+
 					}
 				});
 			}
 		}
 
 	}
-
 	/**
 	 * 判断当前界面是否是桌面
 	 */

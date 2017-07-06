@@ -28,4 +28,8 @@ dependencies {
     compile project(path: ':bzblibrary')
 //    请求权限
     compile 'pub.devrel:easypermissions:0.4.2'
+
+//    ButterKnife
+    compile 'com.jakewharton:butterknife:8.6.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.6.0'
 }
