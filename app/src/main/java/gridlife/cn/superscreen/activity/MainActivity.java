@@ -211,7 +211,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
                 /* 将Bitmap设定到ImageView */
                 ivShowImage.setImageBitmap(bitmap);
-                bitmap=getTransparentBitmap(bitmap,50);
+                bitmap=getTransparentBitmap(bitmap,80);
                 parameter.setShowImage(getBytes(bitmap));
             } catch (FileNotFoundException e) {
                 Log.e("Exception", e.getMessage(),e);
