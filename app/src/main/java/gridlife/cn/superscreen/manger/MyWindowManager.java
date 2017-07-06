@@ -266,9 +266,9 @@ public class MyWindowManager {
         String showText;
         ShowType showType;
         if (smallViewParameter != null) {
-            moveType = smallViewParameter.getMoveType();
-            showText = smallViewParameter.getShowText();
-            showType = smallViewParameter.getShowType();
+            moveType = smallViewParameter.getMoveType()==null?MoveType.RANDOMDOTMOVE:smallViewParameter.getMoveType();
+            showText = smallViewParameter.getShowText()==null?"":smallViewParameter.getShowText();
+            showType = smallViewParameter.getShowType()==null?ShowType.TIME:smallViewParameter.getShowType();
             bitmap = getBitmap(smallViewParameter.getShowImage());
         } else {
             moveType = MoveType.RANDOMDOTMOVE;
@@ -283,10 +283,8 @@ public class MyWindowManager {
             LogUtils.i("y:==", smallWindowParams.y + "");
             smallWindow.setParams(smallWindowParams);
             if (!showType.equals(ShowType.IMAGE)) {
-                BzbToast.showToast(context,"showText");
                 updateViewContent(context, showText);
             } else {
-                BzbToast.showToast(context,"showBitmap");
                 updateViewContent(context, bitmap);
             }
         } else if (moveType.equals(MoveType.HORIZONMOVE)) {

@@ -5,6 +5,7 @@
     android:layout_width="120dip"
     android:layout_height="120dip"
     android:background="@color/colorTransParent"
+    android:orientation="vertical"
     >
     <TextView
         android:id="@+id/percent"
