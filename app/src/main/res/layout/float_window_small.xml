@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/small_window_layout"
     android:layout_width="120dip"
-    android:layout_height="50dip"
+    android:layout_height="120dip"
     android:background="@color/colorTransParent"
     >
     <TextView
@@ -13,4 +13,11 @@
         android:gravity="center"
         android:textColor="#ff0000"
         />
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        android:scaleType="fitCenter"
+        android:visibility="gone"/>
 </LinearLayout>

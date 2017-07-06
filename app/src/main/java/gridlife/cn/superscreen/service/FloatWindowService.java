@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.IBinder;
 
@@ -51,7 +53,7 @@ public class FloatWindowService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		smallViewParameter = (SmallViewParameter)intent.getExtras().get("windowParameter");
+		smallViewParameter = (SmallViewParameter)intent.getSerializableExtra("windowParameter");
 		// 开启定时器，每隔0.5秒刷新一次
 		if (timer == null) {
 			timer = new Timer();
@@ -128,5 +130,8 @@ public class FloatWindowService extends Service {
 			names.add(ri.activityInfo.packageName);
 		}
 		return names;
+	}
+	public static Bitmap getBitmap(byte[] data){
+		return BitmapFactory.decodeByteArray(data, 0, data.length);//从字节数组解码位图
 	}
 }

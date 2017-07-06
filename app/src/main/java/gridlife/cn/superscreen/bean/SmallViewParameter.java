@@ -1,5 +1,6 @@
 package gridlife.cn.superscreen.bean;
 
+import android.graphics.Bitmap;
 import android.media.Image;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -16,7 +17,7 @@ public class SmallViewParameter implements Serializable {
     private String  contentType;
     private String  showText;
     private ShowType showType;
-    private Image showImage;
+    private byte[] showImage;
     private MoveType moveType;
 
     public String getContentType() {
@@ -35,11 +36,11 @@ public class SmallViewParameter implements Serializable {
         this.contentType = contentType;
     }
 
-    public Image getShowImage() {
+    public byte[] getShowImage() {
         return showImage;
     }
 
-    public void setShowImage(Image showImage) {
+    public void setShowImage(byte[] showImage) {
         this.showImage = showImage;
     }
 

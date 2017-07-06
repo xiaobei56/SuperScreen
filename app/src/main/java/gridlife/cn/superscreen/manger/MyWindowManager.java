@@ -2,11 +2,15 @@ package gridlife.cn.superscreen.manger;
 
 import android.app.ActivityManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.PixelFormat;
 import android.media.Image;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -63,6 +67,7 @@ public class MyWindowManager {
     private static ActivityManager mActivityManager;
     private static int screenWidth = 1;
     private static int screenHeight = 1;
+    private static Bitmap bitmap;
 
     /**
      * 创建一个小悬浮窗。初始位置为屏幕的右部中间位置。
@@ -158,6 +163,15 @@ public class MyWindowManager {
         }
     }
 
+    public static void updateViewContent(Context context, Bitmap b) {
+        if (smallWindow != null) {
+            smallWindow.findViewById(R.id.percent).setVisibility(View.GONE);
+            ImageView imageView = smallWindow.findViewById(R.id.image);
+            imageView.setVisibility(View.VISIBLE);
+            imageView.setImageBitmap(b);
+        }
+    }
+
     public void updateLoaction(Context context) {
 
     }
@@ -221,7 +235,7 @@ public class MyWindowManager {
             long totalMemorySize = Integer.parseInt(subMemoryLine.replaceAll("\\D+", ""));
             long availableSize = getAvailableMemory(context) / 1024;
             int percent = (int) ((totalMemorySize - availableSize) / (float) totalMemorySize * 100);
-            return "内存使用："+percent + "%";
+            return "内存使用：" + percent + "%";
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -243,6 +257,10 @@ public class MyWindowManager {
     static int y = getRandomHeightNum();
     static int x = getRandomWidthNum();
 
+    public static Bitmap getBitmap(byte[] data) {
+        return BitmapFactory.decodeByteArray(data, 0, data.length);//从字节数组解码位图
+    }
+
     public static void updateMove(Context context, SmallViewParameter smallViewParameter) {
         MoveType moveType;
         String showText;
@@ -250,8 +268,8 @@ public class MyWindowManager {
         if (smallViewParameter != null) {
             moveType = smallViewParameter.getMoveType();
             showText = smallViewParameter.getShowText();
-            showType = ShowType.TEXT;
-            Image image = smallViewParameter.getShowImage();
+            showType = smallViewParameter.getShowType();
+            bitmap = getBitmap(smallViewParameter.getShowImage());
         } else {
             moveType = MoveType.RANDOMDOTMOVE;
             showText = "null";
@@ -260,28 +278,30 @@ public class MyWindowManager {
         if (moveType.equals(MoveType.RANDOMDOTMOVE)) {
 
             smallWindowParams.x = getRandomWidthNum();
-            Log.i("x:==", smallWindowParams.x+"");
+            Log.i("x:==", smallWindowParams.x + "");
             smallWindowParams.y = getRandomHeightNum();
-            LogUtils.i("y:==", smallWindowParams.y+"");
+            LogUtils.i("y:==", smallWindowParams.y + "");
             smallWindow.setParams(smallWindowParams);
             if (!showType.equals(ShowType.IMAGE)) {
+                BzbToast.showToast(context,"showText");
                 updateViewContent(context, showText);
             } else {
-                updateViewContent(context, showText+"00");
+                BzbToast.showToast(context,"showBitmap");
+                updateViewContent(context, bitmap);
             }
         } else if (moveType.equals(MoveType.HORIZONMOVE)) {
             smallWindowParams.x = x++;
             Log.i("x:==", (x++) + "");
             smallWindowParams.y = y;
-            Log.i("y:==", y+"");
+            Log.i("y:==", y + "");
             smallWindow.setParams(smallWindowParams);
             if (!showType.equals(ShowType.IMAGE)) {
                 updateViewContent(context, showText);
             } else {
-                updateViewContent(context,showText+"00" );
+                updateViewContent(context, bitmap);
             }
         }
-        Log.e("showText",showText);
+        Log.e("showText", showText);
         WindowManager windowManager = getWindowManager(context);
         windowManager.updateViewLayout(smallWindow, smallWindowParams);
 

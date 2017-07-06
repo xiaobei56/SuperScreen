@@ -1,12 +1,17 @@
 package gridlife.cn.superscreen.activity;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +20,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -93,6 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         fab.setOnClickListener(this);
         rgSelectContent.setOnCheckedChangeListener(this);
         rgMoveType.setOnCheckedChangeListener(this);
+        ivShowImage.setOnClickListener(this);
     }
 
     @Override
@@ -177,10 +185,40 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.iv_show_image:
                 BzbToast.showToast(this, "选择照片");
+                Intent intent = new Intent();
+                /* 开启Pictures画面Type设定为image */
+                intent.setType("image/*");
+                /* 使用Intent.ACTION_GET_CONTENT这个Action */
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                /* 取得相片后返回本画面 */
+                startActivityForResult(intent, 1);
                 break;
         }
     }
-
+    public static byte[] getBytes(Bitmap bitmap){
+        //实例化字节数组输出流
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, baos);//压缩位图
+        return baos.toByteArray();//创建分配字节数组
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Log.e("uri", uri.toString());
+            ContentResolver cr = this.getContentResolver();
+            try {
+                Bitmap bitmap = BitmapFactory.decodeStream(cr.openInputStream(uri));
+                /* 将Bitmap设定到ImageView */
+                ivShowImage.setImageBitmap(bitmap);
+                bitmap=getTransparentBitmap(bitmap,50);
+                parameter.setShowImage(getBytes(bitmap));
+            } catch (FileNotFoundException e) {
+                Log.e("Exception", e.getMessage(),e);
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
     MoveType moveType = MoveType.PERMEMENTMOVE;
     ShowType showType=ShowType.TEXT;
     @Override
@@ -234,7 +272,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         }
     }
+    public static Bitmap getTransparentBitmap(Bitmap sourceImg, int number){
+        int[] argb = new int[sourceImg.getWidth() * sourceImg.getHeight()];
 
+        sourceImg.getPixels(argb, 0, sourceImg.getWidth(), 0, 0, sourceImg
+
+                .getWidth(), sourceImg.getHeight());// 获得图片的ARGB值
+
+        number = number * 255 / 100;
+
+        for (int i = 0; i < argb.length; i++) {
+
+            argb[i] = (number << 24) | (argb[i] & 0x00FFFFFF);
+
+        }
+
+        sourceImg = Bitmap.createBitmap(argb, sourceImg.getWidth(), sourceImg
+
+                .getHeight(), Bitmap.Config.ARGB_8888);
+
+        return sourceImg;
+    }
 
 //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
